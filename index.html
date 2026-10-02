@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKÜN Haber Ajansı - Akdeniz Üniversitesi</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #003366;
+            --accent-orange: #FF6600;
+            --bg-light: #F4F6F9;
+            --surface-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-blue: #1E293B;
+            --accent-orange: #FF6600;
+            --bg-light: #0F172A;
+            --surface-white: #1E293B;
+            --text-dark: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border-color: #334155;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        /* Top Bar & Header */
+        .top-bar {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 8px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .top-bar-left span {
+            margin-right: 15px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1rem;
+        }
+
+        header {
+            background: var(--surface-white);
+            box-shadow: var(--shadow);
+            sticky: top 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, var(--primary-blue), #002244);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.4rem;
+            border-left: 4px solid var(--accent-orange);
+            box-shadow: var(--shadow);
+        }
+
+        .logo-text h1 {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        [data-theme="dark"] .logo-text h1 {
+            color: var(--text-dark);
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 35px 8px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-light);
+            color: var(--text-dark);
+            outline: none;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--surface-white);
+            border-bottom: 2px solid var(--accent-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            padding: 0 5%;
+            overflow-x: auto;
+        }
+
+        .nav-links li a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .nav-links li a:hover, .nav-links li a.active {
+            color: var(--accent-orange);
+            border-bottom: 2px solid var(--accent-orange);
+        }
+
+        /* Ticker (Son Dakika) */
+        .ticker-wrap {
+            display: flex;
+            background: var(--surface-white);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            height: 40px;
+            align-items: center;
+        }
+
+        .ticker-title {
+            background: var(--accent-orange);
+            color: white;
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            padding-left: 20px;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Layout Grid */
+        .main-container {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 25px;
+            padding: 0 5%;
+            margin-bottom: 40px;
+        }
+
+        /* Hero Slider Area */
+        .hero-slider {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 400px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            cursor: pointer;
+        }
+
+        .hero-slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            color: white;
+            padding: 25px;
+        }
+
+        .hero-category {
+            background: var(--accent-orange);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* News Cards Grid */
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            border-left: 4px solid var(--accent-orange);
+            padding-left: 10px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        [data-theme="dark"] .section-title {
+            color: var(--text-dark);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .news-card {
+            background: var(--surface-white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .news-card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .news-card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .news-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        /* Sidebar Widget */
+        .sidebar-widget {
+            background: var(--surface-white);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .popular-list {
+            list-style: none;
+        }
+
+        .popular-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            align-items: center;
+        }
+
+        .popular-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .popular-number {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            min-width: 25px;
+        }
+
+        .popular-text {
+            font-size: 0.88rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* Quick Info Widgets */
+        .info-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--primary-blue), #001f3f);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Modal / News View */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--surface-white);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 12px;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-blue);
+            color: white;
+            padding: 40px 5% 20px;
+            margin-top: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h3 {
+            color: var(--accent-orange);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .footer-col p, .footer-col a {
+            color: #CBD5E1;
+            font-size: 0.85rem;
+            text-decoration: none;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            color: #94A3B8;
+        }
+
+        .developer-tag {
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .search-box {
+                display: none;
+            }
+            .hero-slider {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <span><i class="fa-solid fa-graduation-cap"></i> Akdeniz Üniversitesi İletişim Fakültesi</span>
+            <span><i class="fa-solid fa-location-dot"></i> Antalya, Türkiye</span>
+        </div>
+        <div class="top-bar-right">
+            <span id="current-date">--.--.----</span>
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="logo-area">
+                <div class="logo-badge">AKÜN</div>
+                <div class="logo-text">
+                    <h1>HABER AJANSI</h1>
+                    <p>AKDENİZ ÜNİVERSİTESİ DİJİTAL BASIN PORTALI</p>
+                </div>
+            </a>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Haber veya içerik ara..." onkeyup="searchNews()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#" class="active" onclick="filterCategory('Tümü')">Ana Sayfa</a></li>
+                <li><a href="#" onclick="filterCategory('Gündem')">Gündem</a></li>
+                <li><a href="#" onclick="filterCategory('Akademi')">Akademi & Bilim</a></li>
+                <li><a href="#" onclick="filterCategory('Kampüs')">Kampüs Yaşamı</a></li>
+                <li><a href="#" onclick="filterCategory('Kültür')">Kültür-Sanat</a></li>
+                <li><a href="#" onclick="filterCategory('Spor')">Spor</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Ticker -->
+    <div class="ticker-wrap">
+        <div class="ticker-title"><i class="fa-solid fa-bolt mr-2"></i> SON DAKİKA</div>
+        <div class="ticker-content" id="ticker-text">
+            Akdeniz Üniversitesi TEKNOFEST 2026 Proje Yarışmasında Birincilik Ödülü Kazandı!
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="main-container">
+        
+        <!-- Left Column: Slider & Cards -->
+        <main>
+            <!-- Hero Slider -->
+            <div class="hero-slider" onclick="openModal(newsData[0])">
+                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=80" alt="Manşet Haber">
+                <div class="hero-overlay">
+                    <span class="hero-category">Akademi & Bilim</span>
+                    <h2 class="hero-title">Akdeniz Üniversitesi'nden Çevre Dostu Yapay Zeka Odaklı Yeni Araştırma Merkezi</h2>
+                </div>
+            </div>
+
+            <!-- News Grid -->
+            <div class="section-title">
+                <span>Güncel Kampüs Haberleri</span>
+                <small style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;" id="news-count"></small>
+            </div>
+            
+            <div class="news-grid" id="news-grid-container">
+                <!-- Javascript dinamik yükleyecek -->
+            </div>
+        </main>
+
+        <!-- Right Column: Sidebar -->
+        <aside>
+            <!-- Weather / Info Widget -->
+            <div class="info-card">
+                <div>
+                    <h4>Antalya Kampüs</h4>
+                    <p style="font-size:0.8rem; opacity:0.8;">Güneşli, 24°C</p>
+                </div>
+                <i class="fa-solid fa-sun fa-2x" style="color: #FFD700;"></i>
+            </div>
+
+            <!-- Most Read Widget -->
+            <div class="sidebar-widget">
+                <div class="section-title">Çok Okunanlar</div>
+                <ul class="popular-list">
+                    <li class="popular-item" onclick="openModal(newsData[1])">
+                        <span class="popular-number">1</span>
+                        <div class="popular-text">Bahar Yarıyılı Yemekhane Burs Başvuruları Başladı</div>
+                    </li>
+                    <li class="popular-item" onclick="openModal(newsData[2])">
+                        <span class="popular-number">2</span>
+                        <div class="popular-text">İletişim Fakültesi Öğrencilerinden Ulusal Film Festivali Başarısı</div>
+                    </li>
+                    <li class="popular-item" onclick="openModal(newsData[3])">
+                        <span class="popular-number">3</span>
+                        <div class="popular-text">Ocak Ayı Kütüphane 24 Saat Açık Çalışma Programı</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Social Media Widget -->
+            <div class="sidebar-widget" style="text-align: center;">
+                <div class="section-title">AKÜN Medya</div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">Bizi sosyal medyada takip edin, haber kaçırmayın!</p>
+                <div style="display: flex; justify-content: center; gap: 15px; font-size: 1.3rem;">
+                    <a href="#" style="color:var(--primary-blue);"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" style="color:var(--primary-blue);"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" style="color:var(--primary-blue);"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" style="color:var(--primary-blue);"><i class="fa-brands fa-linkedin"></i></a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- News Reading Modal -->
+    <div class="modal" id="newsModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <span class="hero-category" id="modalCategory">Kategori</span>
+            <h2 id="modalTitle" style="margin: 10px 0; font-size: 1.5rem;">Haber Başlığı</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;" id="modalDate">Tarih</p>
+            <img id="modalImage" src="" alt="Haber Görseli" style="width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+            <div id="modalBody" style="line-height: 1.8; color: var(--text-dark);">
+                <!-- İçerik -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>AKÜN Haber Ajansı</h3>
+                <p>Akdeniz Üniversitesi İletişim Fakültesi Uygulama Birimi olarak kampüsten ve dünyadan en doğru haberleri aktarıyoruz.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Hızlı Bağlantılar</h3>
+                <a href="https://www.akdeniz.edu.tr" target="_blank">Akdeniz Üniversitesi</a>
+                <a href="#">İletişim Fakültesi</a>
+                <a href="#">Öğrenci Bilgi Sistemi (OBS)</a>
+                <a href="#">Yemekhane Menüsü</a>
+            </div>
+            <div class="footer-col">
+                <h3>İletişim</h3>
+                <p>Dumlupınar Bulvarı Akdeniz Üniversitesi Kampüsü, Kepez/Antalya</p>
+                <p>E-posta: akunhaber@akdeniz.edu.tr</p>
+                <p>Tel: +90 242 227 44 00</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 AKÜN Haber Ajansı - Tüm Hakları Saklıdır.</p>
+            <p style="margin-top: 5px;">Geliştirici: <span class="developer-tag">Yusuf Onur Kızık</span></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Sample News Data (Siyasetten Tamamen Uzak Kampüs/Akademi Haberleri)
+        const newsData = [
+            {
+                id: 1,
+                title: "Akdeniz Üniversitesi'nden Çevre Dostu Yapay Zeka Odaklı Yeni Araştırma Merkezi",
+                category: "Akademi",
+                date: "24 Ekim 2026",
+                image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=80",
+                desc: "Rektörlük bünyesinde kurulan Teknoloji ve Yapay Zeka Laboratuvarı, genç araştırmacılara kapılarını açtı.",
+                content: "Akdeniz Üniversitesi, teknolojik dönüşüm hamlesi kapsamında bünyesine eklediği Yapay Zeka ve Bilişim Araştırma Merkezi'nin açılışını gerçekleştirdi. Yapay zeka, sürdürülebilir tarım ve veri analitiği alanlarında disiplinlerarası çalışmalara ev sahipliği yapacak merkez, öğrencilere uluslararası projelerde yer alma imkanı sunacak."
+            },
+            {
+                id: 2,
+                title: "Bahar Yarıyılı Yemekhane Burs Başvuruları Açıklandı",
+                category: "Kampüs",
+                date: "23 Ekim 2026",
+                image: "https://images.unsplash.com/photo-1567521464027-f127ff144326?auto=format&fit=crop&w=600&q=80",
+                desc: "Sağlık Kültür ve Spor Daire Başkanlığı burs kazanan öğrencilerin listesini yayımladı.",
+                content: "Sağlık Kültür ve Spor Daire Başkanlığı tarafından yürütülen ücretsiz yemek bursu sonuçları duyuruldu. Kriterleri sağlayan toplam 1.500 öğrenci bahar dönemi boyunca yemekhane imkanlarından ücretsiz yararlanabilecek."
+            },
+            {
+                id: 3,
+                title: "İletişim Fakültesi Öğrencilerinden Belgesel Film Başarısı",
+                category: "Kültür",
+                date: "22 Ekim 2026",
+                image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80",
+                desc: "Radyo, Televizyon ve Sinema bölümü öğrencileri 'Mavi Dalga' belgeseliyle ödüle layık görüldü.",
+                content: "Uluslararası Kısa Film Festivali'nde Akdeniz Üniversitesi İletişim Fakültesi öğrencileri büyük bir başarıya imza attı. Çevre kirliliğine dikkat çekmek amacıyla hazırlanan 'Mavi Dalga' belgeseli Jüri Özel Ödülü'nü kazandı."
+            },
+            {
+                id: 4,
+                title: "Ocak Ayı Kütüphane 24 Saat Açık Çalışma Programı",
+                category: "Kampüs",
+                date: "21 Ekim 2026",
+                image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=80",
+                desc: "Vize ve final haftaları boyunca Merkez Kütüphane 7/24 hizmet vermeye devam edecek.",
+                content: "Öğrencilerden gelen yoğun talep üzerine Akdeniz Üniversitesi Merkez Kütüphanesi, sınav dönemlerinde 24 saat kesintisiz hizmet moduna geçti. Gece çalışma saatlerinde öğrencilere çay ve ikramlar sunulacağı belirtildi."
+            },
+            {
+                id: 5,
+                title: "Üniversitelerarası Tenis Turnuvasında Şampiyonluk Akdeniz'in",
+                category: "Spor",
+                date: "20 Ekim 2026",
+                image: "https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=600&q=80",
+                desc: "Spor Bilimleri Fakültesi Tenis Takımı ulusal turnuvayı birincilikle tamamladı.",
+                content: "Türkiye Üniversite Sporları Federasyonu tarafından organize edilen Tenis Şampiyonası'nda Erkek Tenis Takımımız tüm rakiplerini mağlup ederek şampiyonluk kupasını Antalya'ya getirdi."
+            }
+        ];
+
+        // Date Display
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('tr-TR', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        });
+
+        // Load News Cards
+        function renderNews(items) {
+            const container = document.getElementById('news-grid-container');
+            container.innerHTML = '';
+            document.getElementById('news-count').innerText = `${items.length} haber listeleniyor`;
+
+            items.forEach(news => {
+                const card = `
+                    <div class="news-card" onclick="openModal(newsData[${news.id - 1}])">
+                        <img src="${news.image}" alt="${news.title}">
+                        <div class="news-card-body">
+                            <div class="news-meta">
+                                <span><i class="fa-regular fa-folder"></i> ${news.category}</span>
+                                <span><i class="fa-regular fa-clock"></i> ${news.date}</span>
+                            </div>
+                            <h3 class="news-card-title">${news.title}</h3>
+                            <p class="news-card-desc">${news.desc}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // Filter Category
+        function filterCategory(category) {
+            // Active link styling
+            const links = document.querySelectorAll('.nav-links a');
+            links.forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (category === 'Tümü') {
+                renderNews(newsData);
+            } else {
+                const filtered = newsData.filter(n => n.category === category);
+                renderNews(filtered);
+            }
+        }
+
+        // Live Search
+        function searchNews() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = newsData.filter(n => 
+                n.title.toLowerCase().includes(query) || 
+                n.desc.toLowerCase().includes(query)
+            );
+            renderNews(filtered);
+        }
+
+        // Modal Functionality
+        function openModal(news) {
+            document.getElementById('modalCategory').innerText = news.category;
+            document.getElementById('modalTitle').innerText = news.title;
+            document.getElementById('modalDate').innerText = news.date;
+            document.getElementById('modalImage').src = news.image;
+            document.getElementById('modalBody').innerText = news.content;
+            document.getElementById('newsModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('newsModal').style.display = 'none';
+        }
+
+        // Dark/Light Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const icon = document.querySelector('.theme-toggle i');
+
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                icon.className = 'fa-solid fa-moon';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.className = 'fa-solid fa-sun';
+            }
+        }
+
+        // Modal dışına tıklayınca kapatma
+        window.onclick = function(event) {
+            const modal = document.getElementById('newsModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Initialize Render
+        renderNews(newsData);
+    </script>
+</body>
+</html>
